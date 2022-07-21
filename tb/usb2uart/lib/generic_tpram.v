@@ -80,237 +80,237 @@
 // Adding empty directories required by HDL coding guidelines
 //
 //
- 
+
 // synopsys translate_off
 // synopsys translate_on
 //`include "defines.v"
- 
+
 module generic_tpram(
-	// Generic synchronous two-port RAM interface
-	clk_a, rst_a, ce_a, we_a, oe_a, addr_a, di_a, do_a,
-	clk_b, rst_b, ce_b, we_b, oe_b, addr_b, di_b, do_b
-);
- 
+		// Generic synchronous two-port RAM interface
+		clk_a, rst_a, ce_a, we_a, oe_a, addr_a, di_a, do_a,
+		clk_b, rst_b, ce_b, we_b, oe_b, addr_b, di_b, do_b
+	);
+
 //
 // Default address and data buses width
 //
-parameter aw = 5;
-parameter dw = 32;
-parameter MEM_SIZE = (1<<aw); 
- 
+	parameter aw       = 5;
+	parameter dw       = 32;
+	parameter MEM_SIZE = (1<<aw);
+
 //
 // Generic synchronous two-port RAM interface
 //
-input			clk_a;	// Clock
-input			rst_a;	// Reset
-input			ce_a;	// Chip enable input
-input			we_a;	// Write enable input
-input			oe_a;	// Output enable input
-input 	[aw-1:0]	addr_a;	// address bus inputs
-input	[dw-1:0]	di_a;	// input data bus
-output	[dw-1:0]	do_a;	// output data bus
-input			clk_b;	// Clock
-input			rst_b;	// Reset
-input			ce_b;	// Chip enable input
-input			we_b;	// Write enable input
-input			oe_b;	// Output enable input
-input 	[aw-1:0]	addr_b;	// address bus inputs
-input	[dw-1:0]	di_b;	// input data bus
-output	[dw-1:0]	do_b;	// output data bus
- 
+	input           clk_a;  // Clock
+	input           rst_a;  // Reset
+	input           ce_a;   // Chip enable input
+	input           we_a;   // Write enable input
+	input           oe_a;   // Output enable input
+	input   [aw-1:0]    addr_a; // address bus inputs
+	input   [dw-1:0]    di_a;   // input data bus
+	output  [dw-1:0]    do_a;   // output data bus
+	input           clk_b;  // Clock
+	input           rst_b;  // Reset
+	input           ce_b;   // Chip enable input
+	input           we_b;   // Write enable input
+	input           oe_b;   // Output enable input
+	input   [aw-1:0]    addr_b; // address bus inputs
+	input   [dw-1:0]    di_b;   // input data bus
+	output  [dw-1:0]    do_b;   // output data bus
+
 //
 // Internal wires and registers
 //
- 
- 
+
+
 `ifdef ARTISAN_SDP
- 
+
 //
 // Instantiation of ASIC memory:
 //
 // Artisan Synchronous Double-Port RAM (ra2sh)
 //
 `ifdef UNUSED
-art_hsdp_32x32 #(dw, 1<<aw, aw) artisan_sdp(
+	art_hsdp_32x32 #(dw, 1<<aw, aw) artisan_sdp(
 `else
-art_hsdp_32x32 artisan_sdp(
+		art_hsdp_32x32 artisan_sdp(
 `endif
-	.qa(do_a),
-	.clka(clk_a),
-	.cena(~ce_a),
-	.wena(~we_a),
-	.aa(addr_a),
-	.da(di_a),
-	.oena(~oe_a),
-	.qb(do_b),
-	.clkb(clk_b),
-	.cenb(~ce_b),
-	.wenb(~we_b),
-	.ab(addr_b),
-	.db(di_b),
-	.oenb(~oe_b)
-);
- 
+			.qa  (do_a  ),
+			.clka(clk_a ),
+			.cena(~ce_a ),
+			.wena(~we_a ),
+			.aa  (addr_a),
+			.da  (di_a  ),
+			.oena(~oe_a ),
+			.qb  (do_b  ),
+			.clkb(clk_b ),
+			.cenb(~ce_b ),
+			.wenb(~we_b ),
+			.ab  (addr_b),
+			.db  (di_b  ),
+			.oenb(~oe_b )
+		);
+
 `else
- 
+
 `ifdef AVANT_ATP
- 
+
 //
 // Instantiation of ASIC memory:
 //
 // Avant! Asynchronous Two-Port RAM
 //
-avant_atp avant_atp(
-	.web(~we),
-	.reb(),
-	.oeb(~oe),
-	.rcsb(),
-	.wcsb(),
-	.ra(addr),
-	.wa(addr),
-	.di(di),
-	.do(do)
-);
- 
+		avant_atp avant_atp(
+			.web (~we ),
+			.reb (    ),
+			.oeb (~oe ),
+			.rcsb(    ),
+			.wcsb(    ),
+			.ra  (addr),
+			.wa  (addr),
+			.di  (di  ),
+			.do  (do  )
+		);
+
 `else
- 
+
 `ifdef VIRAGE_STP
- 
+
 //
 // Instantiation of ASIC memory:
 //
 // Virage Synchronous 2-port R/W RAM
 //
-virage_stp virage_stp(
-	.QA(do_a),
-	.QB(do_b),
- 
-	.ADRA(addr_a),
-	.DA(di_a),
-	.WEA(we_a),
-	.OEA(oe_a),
-	.MEA(ce_a),
-	.CLKA(clk_a),
- 
-	.ADRB(adr_b),
-	.DB(di_b),
-	.WEB(we_b),
-	.OEB(oe_b),
-	.MEB(ce_b),
-	.CLKB(clk_b)
-);
- 
+		virage_stp virage_stp(
+			.QA  (do_a  ),
+			.QB  (do_b  ),
+
+			.ADRA(addr_a),
+			.DA  (di_a  ),
+			.WEA (we_a  ),
+			.OEA (oe_a  ),
+			.MEA (ce_a  ),
+			.CLKA(clk_a ),
+
+			.ADRB(adr_b ),
+			.DB  (di_b  ),
+			.WEB (we_b  ),
+			.OEB (oe_b  ),
+			.MEB (ce_b  ),
+			.CLKB(clk_b )
+		);
+
 `else
- 
+
 `ifdef XILINX_RAMB4
- 
+
 //
 // Instantiation of FPGA memory:
 //
 // Virtex/Spartan2
 //
- 
+
 //
 // Block 0
 //
-RAMB4_S16_S16 ramb4_s16_s16_0(
-	.CLKA(clk_a),
-	.RSTA(rst_a),
-	.ADDRA(addr_a),
-	.DIA(di_a[15:0]),
-	.ENA(ce_a),
-	.WEA(we_a),
-	.DOA(do_a[15:0]),
- 
-	.CLKB(clk_b),
-	.RSTB(rst_b),
-	.ADDRB(addr_b),
-	.DIB(di_b[15:0]),
-	.ENB(ce_b),
-	.WEB(we_b),
-	.DOB(do_b[15:0])
-);
- 
+		RAMB4_S16_S16 ramb4_s16_s16_0(
+			.CLKA (clk_a     ),
+			.RSTA (rst_a     ),
+			.ADDRA(addr_a    ),
+			.DIA  (di_a[15:0]),
+			.ENA  (ce_a      ),
+			.WEA  (we_a      ),
+			.DOA  (do_a[15:0]),
+
+			.CLKB (clk_b     ),
+			.RSTB (rst_b     ),
+			.ADDRB(addr_b    ),
+			.DIB  (di_b[15:0]),
+			.ENB  (ce_b      ),
+			.WEB  (we_b      ),
+			.DOB  (do_b[15:0])
+		);
+
 //
 // Block 1
 //
-RAMB4_S16_S16 ramb4_s16_s16_1(
-	.CLKA(clk_a),
-	.RSTA(rst_a),
-	.ADDRA(addr_a),
-	.DIA(di_a[31:16]),
-	.ENA(ce_a),
-	.WEA(we_a),
-	.DOA(do_a[31:16]),
- 
-	.CLKB(clk_b),
-	.RSTB(rst_b),
-	.ADDRB(addr_b),
-	.DIB(di_b[31:16]),
-	.ENB(ce_b),
-	.WEB(we_b),
-	.DOB(do_b[31:16])
-);
- 
+		RAMB4_S16_S16 ramb4_s16_s16_1(
+			.CLKA (clk_a      ),
+			.RSTA (rst_a      ),
+			.ADDRA(addr_a     ),
+			.DIA  (di_a[31:16]),
+			.ENA  (ce_a       ),
+			.WEA  (we_a       ),
+			.DOA  (do_a[31:16]),
+
+			.CLKB (clk_b      ),
+			.RSTB (rst_b      ),
+			.ADDRB(addr_b     ),
+			.DIB  (di_b[31:16]),
+			.ENB  (ce_b       ),
+			.WEB  (we_b       ),
+			.DOB  (do_b[31:16])
+		);
+
 `else
- 
+
 //
 // Generic two-port synchronous RAM model
 //
- 
+
 //
 // Generic RAM's registers and wires
 //
-reg	[dw-1:0]	mem [(1<<aw)-1:0];	// RAM content
-wire	[dw-1:0]	do_reg_a;		// RAM data output register
-wire	[dw-1:0]	do_reg_b;		// RAM data output register
-reg	[dw-1:0]	do_wc_reg_a;		// RAM data output register (write check)
-reg	[dw-1:0]	do_wc_reg_b;		// RAM data output register (write check)
- 
+		reg [dw-1:0]    mem [(1<<aw)-1:0];  // RAM content
+		wire    [dw-1:0]    do_reg_a;       // RAM data output register
+		wire    [dw-1:0]    do_reg_b;       // RAM data output register
+		reg [dw-1:0]    do_wc_reg_a;        // RAM data output register (write check)
+		reg [dw-1:0]    do_wc_reg_b;        // RAM data output register (write check)
+
 //
 // Data output drivers
 //
 // Output only valid when output enabled and chip enbled
-assign do_a = (oe_a & ce_a) ? do_reg_a : {dw{1'bz}};
-assign do_b = (oe_b & ce_b) ? do_reg_b : {dw{1'bz}};
- 
-// Output is invalid while writing data 
-assign do_reg_a = (we_a) ? {dw{1'b x}} : do_wc_reg_a;
-assign do_reg_b = (we_b) ? {dw{1'b x}} : do_wc_reg_b;
- 
+		assign do_a      = (oe_a & ce_a) ? do_reg_a : {dw{1'bz}};
+		assign do_b      = (oe_b & ce_b) ? do_reg_b : {dw{1'bz}};
+
+// Output is invalid while writing data
+		assign do_reg_a  = (we_a) ? {dw{1'b x}} : do_wc_reg_a;
+		assign do_reg_b  = (we_b) ? {dw{1'b x}} : do_wc_reg_b;
+
 //
 // RAM read and write
 //
-always @(posedge clk_a)
-	if (ce_a && !we_a)
-        	do_wc_reg_a <= #1 (we_b && (addr_a==addr_b)) ? {dw{1'b x}} : mem[addr_a];
-	else if (ce_a && we_a)
+		always @(posedge clk_a)
+		if (ce_a && !we_a)
+		do_wc_reg_a <= #1 (we_b && (addr_a==addr_b)) ? {dw{1'b x}} : mem[addr_a];
+		else if (ce_a && we_a)
 		mem[addr_a] <= #1 di_a;
- 
+
 //
 // RAM read and write
 //
-always @(posedge clk_b)
-	if (ce_b && !we_b)
-        	do_wc_reg_b <= #1 (we_a && (addr_a==addr_b)) ? {dw{1'b x}} : mem[addr_b];
-	else if (ce_b && we_b)
+		always @(posedge clk_b)
+		if (ce_b && !we_b)
+		do_wc_reg_b <= #1 (we_a && (addr_a==addr_b)) ? {dw{1'b x}} : mem[addr_b];
+		else if (ce_b && we_b)
 		mem[addr_b] <= #1 di_b;
- 
+
 // Task prints range of memory
-// *** Remember that tasks are non reentrant, don't call this task in parallel for multiple instantiations. 
-task print_ram;
-input [aw-1:0] start;
-input [aw-1:0] finish;
-integer rnum;
-  begin
-    for (rnum=start;rnum<=finish;rnum=rnum+1)
-      $display("Addr %h = %h",rnum,mem[rnum]);
-  end
-endtask
- 
-`endif	// !XILINX_RAMB4_S16_S16
-`endif	// !VIRAGE_STP
+// *** Remember that tasks are non reentrant, don't call this task in parallel for multiple instantiations.
+		task print_ram;
+		input [aw-1:0] start;
+		input [aw-1:0] finish;
+		integer rnum;
+			   begin
+		for (rnum=start;rnum<=finish;rnum=rnum+1)
+		$display("Addr %h = %h",rnum,mem[rnum]);
+			   end
+			   endtask
+
+`endif  // !XILINX_RAMB4_S16_S16
+`endif  // !VIRAGE_STP
 `endif  // !AVANT_ATP
-`endif	// !ARTISAN_SDP
- 
-endmodule
+`endif  // !ARTISAN_SDP
+
+			   endmodule

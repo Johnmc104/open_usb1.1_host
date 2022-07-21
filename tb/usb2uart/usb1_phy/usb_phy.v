@@ -69,52 +69,52 @@
 
 
 module usb_phy(clk, rstn, phy_tx_mode, usb_rst,
-	
+
 		// Transciever Interface
-		txdp, txdn, txoe,	
+		txdp, txdn, txoe,
 		rxd, rxdp, rxdn,
 
 		// UTMI Interface
 		DataOut_i, TxValid_i, TxReady_o, RxValid_o,
 		RxActive_o, RxError_o, DataIn_o, LineState_o
-		);
+	);
 
 
-/***************************************
-*  Comman Signal
-*  *************************************/
-input		clk              ; // 48Mhz clock
-input		rstn              ; // Active low async reset
+	/***************************************
+	 *  Comman Signal
+	 *  *************************************/
+	input       clk              ; // 48Mhz clock
+	input       rstn              ; // Active low async reset
 
-input		phy_tx_mode      ; // Used in Tx Path,
-                                   // The PHY supports single ended and differential output to the
-                                   // transceiver Depending on which device you are using, you have
-                                   // to tie the phy_tx_mode high or low. 
-output		usb_rst          ; // usb_rst is asserted whenever the host signals reset on the USB bus.
-                                   // The USB core will internally reset itself automatically.
-                                   // This output is provided for external logic that needs to be
-                                   // reset when the USB bus is reset.
+	input       phy_tx_mode      ; // Used in Tx Path,
+	// The PHY supports single ended and differential output to the
+	// transceiver Depending on which device you are using, you have
+	// to tie the phy_tx_mode high or low.
+	output      usb_rst          ; // usb_rst is asserted whenever the host signals reset on the USB bus.
+	// The USB core will internally reset itself automatically.
+	// This output is provided for external logic that needs to be
+	// reset when the USB bus is reset.
 
-output		txdp, txdn, txoe;
-input		rxd, rxdp, rxdn;
-input	[7:0]	DataOut_i;
-input		TxValid_i;
-output		TxReady_o;
-output	[7:0]	DataIn_o;
-output		RxValid_o;
-output		RxActive_o;
-output		RxError_o;
-output	[1:0]	LineState_o;
+	output      txdp, txdn, txoe;
+	input       rxd, rxdp, rxdn;
+	input   [7:0]   DataOut_i;
+	input       TxValid_i;
+	output      TxReady_o;
+	output  [7:0]   DataIn_o;
+	output      RxValid_o;
+	output      RxActive_o;
+	output      RxError_o;
+	output  [1:0]   LineState_o;
 
 ///////////////////////////////////////////////////////////////////
 //
 // Local Wires and Registers
 //
 
-reg	[4:0]	rst_cnt;
-reg		usb_rst;
-wire		fs_ce;
-wire		rstn;
+	reg [4:0]   rst_cnt;
+	reg     usb_rst;
+	wire        fs_ce;
+	wire        rstn;
 
 ///////////////////////////////////////////////////////////////////
 //
@@ -126,21 +126,21 @@ wire		rstn;
 // TX Phy
 //
 
-usb_tx_phy i_tx_phy(
-	.clk(		clk		),
-	.rstn(		rstn		),
-	.fs_ce(		fs_ce		),
-	.phy_mode(	phy_tx_mode	),
+	usb_tx_phy i_tx_phy(
+		.clk      (       clk         ),
+		.rstn     (       rstn        ),
+		.fs_ce    (       fs_ce       ),
+		.phy_mode (       phy_tx_mode ),
 
-	// Transciever Interface
-	.txdp(		txdp		),
-	.txdn(		txdn		),
-	.txoe(		txoe		),
+		// Transciever Interface
+		.txdp     (       txdp        ),
+		.txdn     (       txdn        ),
+		.txoe     (       txoe        ),
 
-	// UTMI Interface
-	.DataOut_i(	DataOut_i	),
-	.TxValid_i(	TxValid_i	),
-	.TxReady_o(	TxReady_o	)
+		// UTMI Interface
+		.DataOut_i(       DataOut_i   ),
+		.TxValid_i(       TxValid_i   ),
+		.TxReady_o(       TxReady_o   )
 	);
 
 ///////////////////////////////////////////////////////////////////
@@ -148,23 +148,23 @@ usb_tx_phy i_tx_phy(
 // RX Phy and DPLL
 //
 
-usb_rx_phy i_rx_phy(
-	.clk(		clk		),
-	.rstn(		rstn		),
-	.fs_ce(		fs_ce		),
+	usb_rx_phy i_rx_phy(
+		.clk       (       clk         ),
+		.rstn      (       rstn        ),
+		.fs_ce     (       fs_ce       ),
 
-	// Transciever Interface
-	.rxd(		rxd		),
-	.rxdp(		rxdp		),
-	.rxdn(		rxdn		),
+		// Transciever Interface
+		.rxd       (       rxd         ),
+		.rxdp      (       rxdp        ),
+		.rxdn      (       rxdn        ),
 
-	// UTMI Interface
-	.DataIn_o(	DataIn_o	),
-	.RxValid_o(	RxValid_o	),
-	.RxActive_o(	RxActive_o	),
-	.RxError_o(	RxError_o	),
-	.RxEn_i(	txoe		),
-	.LineState(	LineState_o	)
+		// UTMI Interface
+		.DataIn_o  (       DataIn_o    ),
+		.RxValid_o (       RxValid_o   ),
+		.RxActive_o(       RxActive_o  ),
+		.RxError_o (       RxError_o   ),
+		.RxEn_i    (       txoe        ),
+		.LineState (       LineState_o )
 	);
 
 ///////////////////////////////////////////////////////////////////
@@ -173,18 +173,18 @@ usb_rx_phy i_rx_phy(
 //
 
 `ifdef USB_ASYNC_REST
-always @(posedge clk or negedge rstn)
+	always @(posedge clk or negedge rstn)
 `else
-always @(posedge clk)
+		always @(posedge clk)
 `endif
-	if(!rstn)			rst_cnt <= 5'h0;
-	else
-	if(LineState_o != 2'h0)		rst_cnt <= 5'h0;
-	else	
-	if(!usb_rst && fs_ce)		rst_cnt <= rst_cnt + 5'h1;
+			if(!rstn)           rst_cnt <= 5'h0;
+			else
+				if(LineState_o != 2'h0)     rst_cnt <= 5'h0;
+				else
+					if(!usb_rst && fs_ce)       rst_cnt <= rst_cnt + 5'h1;
 
-always @(posedge clk)
-	usb_rst <= (rst_cnt == 5'h1f);
+	always @(posedge clk)
+		usb_rst <= (rst_cnt == 5'h1f);
 
 endmodule
 

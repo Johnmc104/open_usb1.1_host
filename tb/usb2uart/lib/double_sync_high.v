@@ -46,41 +46,38 @@
 //----------------------------------------------------------------------------
 
 module double_sync_high   (
-              in_data    ,
-              out_clk    ,
-              out_rst_n  ,
-              out_data   
-          );
+		in_data    ,
+		out_clk    ,
+		out_rst_n  ,
+		out_data
+	);
 
-parameter WIDTH = 1;
+	parameter WIDTH = 1;
 
-input [WIDTH-1:0]    in_data    ; // Input from Different clock domain
-input                out_clk    ; // Output clock
-input                out_rst_n  ; // Active low Reset
-output[WIDTH-1:0]    out_data   ; // Output Data
+	input [WIDTH-1:0]    in_data    ; // Input from Different clock domain
+	input                out_clk    ; // Output clock
+	input                out_rst_n  ; // Active low Reset
+	output[WIDTH-1:0]    out_data   ; // Output Data
 
 
-reg [WIDTH-1:0]     in_data_s  ; // One   Cycle sync 
-reg [WIDTH-1:0]     in_data_2s ; // two   Cycle sync 
-reg [WIDTH-1:0]     in_data_3s ; // three Cycle sync 
+	reg [WIDTH-1:0]     in_data_s  ; // One   Cycle sync
+	reg [WIDTH-1:0]     in_data_2s ; // two   Cycle sync
+	reg [WIDTH-1:0]     in_data_3s ; // three Cycle sync
 
-assign out_data =  in_data_3s;
+	assign out_data =  in_data_3s;
 
-always @(negedge out_rst_n or posedge out_clk)
-begin
-   if(out_rst_n == 1'b0)
-   begin
-      in_data_s  <= {WIDTH{1'b0}};
-      in_data_2s <= {WIDTH{1'b0}};
-      in_data_3s <= {WIDTH{1'b0}};
-   end
-   else
-   begin
-      in_data_s  <= in_data;
-      in_data_2s <= in_data_s;
-      in_data_3s <= in_data_2s;
-   end
-end
+	always @(negedge out_rst_n or posedge out_clk) begin
+		if(out_rst_n == 1'b0) begin
+			in_data_s  <= {WIDTH{1'b0}};
+			in_data_2s <= {WIDTH{1'b0}};
+			in_data_3s <= {WIDTH{1'b0}};
+		end
+		else begin
+			in_data_s  <= in_data;
+			in_data_2s <= in_data_s;
+			in_data_3s <= in_data_2s;
+		end
+	end
 
 
 endmodule
