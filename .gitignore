@@ -1,0 +1,6 @@
+dvt_build.log
+.project
+sim/*
+!sim/makefile
+regr/*
+!regr/makefile
