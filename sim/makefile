@@ -96,7 +96,7 @@ urghvp:
 #step 4 : view
 verdi:
 	verdi -nologo +v2k -sverilog  \
-	-elab ./sim.daidir/kdb.elab++ \
+	-elab ./simv.daidir/kdb.elab++ \
 	-ssf verilog.fsdb & 
 		
 clean:
